@@ -15,13 +15,6 @@
 #define TRUE    1
 #define FALSE   0
 
-#define BLOCK_BLINK     1
-#define BLOCK           2
-#define UNDERLINE_BLINK 3
-#define UNDERLINE       4
-#define BAR_BLINK       5
-#define BAR             6
-
 struct Termsize {
     int cols;
     int rows;
@@ -32,5 +25,7 @@ int getinput();
 void clrscr();
 void setfontcolor(int color);
 void setbgcolor(int color);
+void setfontbold(int status);
+struct Termsize gettermsize();
 
 #endif  // TERMUI_H

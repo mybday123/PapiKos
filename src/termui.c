@@ -57,3 +57,27 @@ void setbgcolor(int color) {
     printf(ESC"[4%dm", color);
     bg_color = color;
 }
+
+void setfontbold(int status) {
+    printf(ESC"[%dm", status);
+    font_bold = status;
+    setfontcolor(font_color);
+    setbgcolor(bg_color);
+}
+
+struct Termsize gettermsize() {
+    struct Termsize termsize;
+    #ifdef _WIN32
+        continue;
+    #elif defined(__unix__) || defined(__APPLE__) || defined(__linux__)
+        struct winsize win;
+        ioctl(STDOUT_FILENO, TIOCGWINSZ, &win);
+        termsize.cols = win.ws_col;
+        termsize.rows = win.ws_row;
+    #else
+        termsize.cols = 0;
+        termsize.rows = 0;
+    #endif
+
+    return termsize;
+}
