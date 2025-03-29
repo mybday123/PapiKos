@@ -58,6 +58,11 @@ void setbgcolor(int color) {
     bg_color = color;
 }
 
+void resetcolor() {
+    setfontcolor(WHITE);
+    setbgcolor(BLACK);
+}
+
 void setfontbold(int status) {
     printf(ESC"[%dm", status);
     font_bold = status;

@@ -26,6 +26,7 @@ void clrscr();
 void setfontcolor(int color);
 void setbgcolor(int color);
 void setfontbold(int status);
+void resetcolor();
 struct Termsize gettermsize();
 
 #endif  // TERMUI_H
