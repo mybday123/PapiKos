@@ -10,7 +10,7 @@
     #include <sys/ioctl.h>
 #endif
 
-// Default color
+// Warna default
 int bg_color = BLACK,
     font_color = WHITE,
     font_bold = FALSE;
@@ -20,6 +20,7 @@ void wait() {
         continue;
 }
 
+// Wrapper getch()
 int getinput() {
     int ch;
     #ifdef _WIN32
@@ -88,6 +89,7 @@ struct Termsize gettermsize() {
     return termsize;
 }
 
+// Matikan input agar tidak bisa dilihat pas diketik
 void disable_echo() {
     #ifdef _WIN32
         HANDLE attr = GetStdHandle(STD_INPUT_HANDLE);
@@ -104,6 +106,7 @@ void disable_echo() {
     #endif
 }
 
+// Hidupkan lagi
 void enable_echo() {
     #ifdef _WIN32
         HANDLE attr = GetStdHandle(STD_INPUT_HANDLE);
