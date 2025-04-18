@@ -20,8 +20,9 @@ void wait() {
 }
 
 int getinput() {
+    int ch;
     #ifdef _WIN32
-        _getch();
+        ch = _getch();
     #elif defined(__unix__) || defined(__APPLE__) || defined(__linux__)
         struct termios old_attr, new_attr;
         if (tcgetattr(STDIN_FILENO, &old_attr) != 0)
@@ -32,11 +33,11 @@ int getinput() {
         if(tcsetattr(STDIN_FILENO, TCSANOW, &new_attr) != 0)
             return EOF;
 
-    int ch = getchar();
+        ch = getchar();
 
         tcsetattr(STDIN_FILENO, TCSANOW, &old_attr);
-        return ch;
     #endif
+    return ch;
 
 }
 
