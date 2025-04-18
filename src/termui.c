@@ -3,6 +3,7 @@
 
 #ifdef _WIN32
     #include <Windows.h>
+    #include <conio.h>
 #else
     #include <termios.h>
     #include <unistd.h>
@@ -71,7 +72,6 @@ struct Termsize gettermsize() {
     struct Termsize termsize;
     #ifdef _WIN32
         CONSOLE_SCREEN_BUFFER_INFO csbi;
-        int cols, rows;
         GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
         termsize.cols = csbi.srWindow.Right - csbi.srWindow.Left + 1;
         termsize.rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
@@ -86,4 +86,36 @@ struct Termsize gettermsize() {
     #endif
 
     return termsize;
+}
+
+void disable_echo() {
+    #ifdef _WIN32
+        HANDLE attr = GetStdHandle(STD_INPUT_HANDLE);
+        DWORD mode = 0;
+        GetConsoleMode(attr, &mode);
+        SetConsoleMode(attr, mode & ~(ENABLE_ECHO_INPUT));
+    #elif defined(__unix__) || defined(__APPLE__) || defined(__linux__)
+        struct termios attr;
+        if (tcgetattr(STDIN_FILENO, &attr) != 0)
+            return EOF;
+        attr.c_lflag &= ~ECHO;
+        if (tcsetattr(STDIN_FILENO, TCSANOW, &attr) != 0)
+            return EOF;
+    #endif
+}
+
+void enable_echo() {
+    #ifdef _WIN32
+        HANDLE attr = GetStdHandle(STD_INPUT_HANDLE);
+        DWORD mode = 0;
+        GetConsoleMode(attr, &mode);
+        SetConsoleMode(attr, mode | ENABLE_ECHO_INPUT);
+    #elif defined(__unix__) || defined(__APPLE__) || defined(__linux__)
+        struct termios attr;
+        if (tcgetattr(STDIN_FILENO, &attr) != 0)
+            return EOF;
+        attr.c_lflag |= ECHO;
+        if (tcsetattr(STDIN_FILENO, TCSANOW, &attr) != 0)
+            return EOF;
+    #endif
 }

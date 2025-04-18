@@ -28,5 +28,7 @@ void setbgcolor(int color);
 void setfontbold(int status);
 void resetcolor();
 struct Termsize gettermsize();
+void disable_echo();
+void enable_echo();
 
 #endif  // TERMUI_H
