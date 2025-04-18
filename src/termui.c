@@ -69,7 +69,11 @@ void setfontbold(int status) {
 struct Termsize gettermsize() {
     struct Termsize termsize;
     #ifdef _WIN32
-        continue;
+        CONSOLE_SCREEN_BUFFER_INFO csbi;
+        int cols, rows;
+        GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+        termsize.cols = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+        termsize.rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
     #elif defined(__unix__) || defined(__APPLE__) || defined(__linux__)
         struct winsize win;
         ioctl(STDOUT_FILENO, TIOCGWINSZ, &win);
