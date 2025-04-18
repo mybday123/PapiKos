@@ -21,7 +21,7 @@ void wait() {
 
 int getinput() {
     #ifdef _WIN32
-        continue;
+        _getch();
     #elif defined(__unix__) || defined(__APPLE__) || defined(__linux__)
         struct termios old_attr, new_attr;
         if (tcgetattr(STDIN_FILENO, &old_attr) != 0)
@@ -31,17 +31,13 @@ int getinput() {
         new_attr.c_lflag &= ~(ICANON | ECHO);
         if(tcsetattr(STDIN_FILENO, TCSANOW, &new_attr) != 0)
             return EOF;
-    #endif
 
     int ch = getchar();
 
-    #ifdef _WIN32
-        continue;
-    #elif defined(__unix__) || defined(__APPLE__) || defined(__linux__)
         tcsetattr(STDIN_FILENO, TCSANOW, &old_attr);
+        return ch;
     #endif
 
-    return ch;
 }
 
 void clrscr() {
