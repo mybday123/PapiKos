@@ -116,9 +116,9 @@ void enable_echo() {
     #elif defined(__unix__) || defined(__APPLE__) || defined(__linux__)
         struct termios attr;
         if (tcgetattr(STDIN_FILENO, &attr) != 0)
-            return EOF;
+            return;
         attr.c_lflag |= ECHO;
         if (tcsetattr(STDIN_FILENO, TCSANOW, &attr) != 0)
-            return EOF;
+            return;
     #endif
 }
