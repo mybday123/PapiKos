@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "include/termui.h"
+#include "include/login.h"
 
 int main() {
     setfontcolor(YELLOW);
@@ -8,11 +9,6 @@ int main() {
     resetcolor();
 
     struct Termsize termsize = gettermsize();
-    printf("C: %d R:%d\n", termsize.cols, termsize.rows);
-    char test[1024];
-    disable_echo();
-    fgets(test, 100, stdin);
-    enable_echo();
-    fgets(test, 100, stdin);
+    login_menu();
     return 0;
 }

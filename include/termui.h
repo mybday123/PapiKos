@@ -30,5 +30,6 @@ void resetcolor();
 struct Termsize gettermsize();
 void disable_echo();
 void enable_echo();
+void print_newline();
 
 #endif  // TERMUI_H

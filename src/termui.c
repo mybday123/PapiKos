@@ -122,3 +122,7 @@ void enable_echo() {
             return;
     #endif
 }
+
+void print_newline() {
+    printf("\n");
+}
