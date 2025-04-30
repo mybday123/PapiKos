@@ -2,8 +2,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "termui.h"
-#include "login.h"
+#include "../include/termui.h"
+#include "../include/login.h"
 
 void login_menu() {
     char c = '0';
