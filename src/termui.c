@@ -59,8 +59,9 @@ void setbgcolor(int color) {
 }
 
 void resetcolor() {
-    setfontcolor(WHITE);
-    setbgcolor(BLACK);
+    printf(ESC"[0m");
+    font_color = WHITE;
+    bg_color = BLACK;
 }
 
 void setfontbold(int status) {
