@@ -213,7 +213,7 @@ void login_menu() {
     print_newline();
     printf("? ");
     if (!scanf("%c", &c)) {
-        return 0;
+        return;
     }
     int ch = getchar();
     (void)ch;
