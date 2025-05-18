@@ -2,15 +2,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-
-#ifdef _WIN32
 #include <Windows.h>
 #include <conio.h>
-#else
-#include <termios.h>
-#include <unistd.h>
-#include <sys/ioctl.h>
-#endif
 
 #define ESC "\x1b"
 #define BLACK   0
@@ -74,22 +67,7 @@ void wait() {
 // Wrapper getch()
 int getinput() {
     int ch;
-#ifdef _WIN32
     ch = _getch();
-#elif defined(__unix__) || defined(__APPLE__) || defined(__linux__)
-    struct termios old_attr, new_attr;
-    if (tcgetattr(STDIN_FILENO, &old_attr) != 0)
-        return EOF;
-
-    new_attr = old_attr;
-    new_attr.c_lflag &= ~(ICANON | ECHO);
-    if (tcsetattr(STDIN_FILENO, TCSANOW, &new_attr) != 0)
-        return EOF;
-
-    ch = getchar();
-
-    tcsetattr(STDIN_FILENO, TCSANOW, &old_attr);
-#endif
     return ch;
 
 }
@@ -123,56 +101,28 @@ void setfontbold(int status) {
 
 struct Termsize gettermsize() {
     struct Termsize termsize;
-#ifdef _WIN32
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
     termsize.cols = csbi.srWindow.Right - csbi.srWindow.Left + 1;
     termsize.rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
-#elif defined(__unix__) || defined(__APPLE__) || defined(__linux__)
-    struct winsize win;
-    ioctl(STDOUT_FILENO, TIOCGWINSZ, &win);
-    termsize.cols = win.ws_col;
-    termsize.rows = win.ws_row;
-#else
-    termsize.cols = 0;
-    termsize.rows = 0;
-#endif
 
     return termsize;
 }
 
 // Matikan input agar tidak bisa dilihat pas diketik
 void disable_echo() {
-#ifdef _WIN32
     HANDLE attr = GetStdHandle(STD_INPUT_HANDLE);
     DWORD mode = 0;
     GetConsoleMode(attr, &mode);
     SetConsoleMode(attr, mode & ~(ENABLE_ECHO_INPUT));
-#elif defined(__unix__) || defined(__APPLE__) || defined(__linux__)
-    struct termios attr;
-    if (tcgetattr(STDIN_FILENO, &attr) != 0)
-        return;
-    attr.c_lflag &= ~ECHO;
-    if (tcsetattr(STDIN_FILENO, TCSANOW, &attr) != 0)
-        return;
-#endif
 }
 
 // Hidupkan lagi
 void enable_echo() {
-#ifdef _WIN32
     HANDLE attr = GetStdHandle(STD_INPUT_HANDLE);
     DWORD mode = 0;
     GetConsoleMode(attr, &mode);
     SetConsoleMode(attr, mode | ENABLE_ECHO_INPUT);
-#elif defined(__unix__) || defined(__APPLE__) || defined(__linux__)
-    struct termios attr;
-    if (tcgetattr(STDIN_FILENO, &attr) != 0)
-        return;
-    attr.c_lflag |= ECHO;
-    if (tcsetattr(STDIN_FILENO, TCSANOW, &attr) != 0)
-        return;
-#endif
 }
 
 void print_newline() {
@@ -236,7 +186,7 @@ void createaccount() {
     char temp_pass[64];
     printf("Masukkan username: ");
     scan_input(new_user.username, 63);
-    if (strcmp(new_user.username, "admin") != 0) {
+    if (strcmp(new_user.username, "admin") == 0) {
         puts("Username tidak bisa admin.");
         return;
     }
@@ -278,10 +228,10 @@ void login() {
 
     printf("Masukkan username: ");
     scan_input(temp_user, 63);
-    disable_echo();
     printf("Masukkan password: ");
-    enable_echo();
+    disable_echo();
     scan_input(temp_pass, 63);
+    enable_echo();
 
     FILE* userfile = fopen(temp_user, "r");
     if (userfile == NULL) {
