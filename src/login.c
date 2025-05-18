@@ -12,7 +12,11 @@ void login_menu() {
     puts("0. Exit");
     print_newline();
     printf("? ");
-    scanf("%c", &c);
+    if (!scanf("%c", &c)) {
+        return 0;
+    }
+    int ch = getchar();
+    (void)ch;
 
     switch (c) {
         case '0':
@@ -30,13 +34,21 @@ void login_menu() {
 void createaccount() {
     struct User new_user;
     char temp_pass[64];
-    printf("Masukkan username:");
-    scanf("%s", new_user.username);
-    printf("Masukkan password");
-    scanf("%s", new_user.password);
-    printf("Masukkan password yang sama lagi:");
-    scanf("%s", temp_pass);
+    printf("Masukkan username: ");
+    scan_input(new_user.username, 63);
+    if (strcmp(new_user.username, "admin") != 0) {
+        puts("Username tidak bisa admin.");
+        return;
+    }
 
+    printf("Masukkan password: ");
+    disable_echo();
+    scan_input(new_user.password, 63);
+    enable_echo();
+    printf("Masukkan password yang sama lagi:");
+    disable_echo();
+    scan_input(temp_pass, 63);
+    enable_echo();
     if (strcmp(new_user.password, temp_pass) != 0) {
         puts("Password tidak sesuai!");
         return;
@@ -60,5 +72,37 @@ void createaccount() {
 }
 
 void login() {
+    struct User user;
+    char temp_user[64];
+    char temp_pass[64];
 
+    printf("Masukkan username: ");
+    scan_input(temp_user, 63);
+    disable_echo();
+    printf("Masukkan password: ");
+    enable_echo();
+    scan_input(temp_pass, 63);
+
+    FILE* userfile = fopen(temp_user, "r");
+    if (userfile == NULL) {
+        puts("Login gagal");
+        return;
+    }
+    if (fread(&user, sizeof(struct User), 1, userfile)) {
+        if (strcmp(user.password, temp_pass) == 0) {
+            puts("Login berhasil");
+            fclose(userfile);
+            return;
+        }
+        else {
+            puts("Login gagal");
+            fclose(userfile);
+            return;
+        }
+    }
+    else {
+        puts("Login gagal");
+        fclose(userfile);
+        return;
+    }
 }

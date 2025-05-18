@@ -31,5 +31,5 @@ struct Termsize gettermsize();
 void disable_echo();
 void enable_echo();
 void print_newline();
-
+int scan_input(char* buffer, size_t max_len);
 #endif  // TERMUI_H

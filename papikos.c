@@ -8,7 +8,6 @@ int main() {
     puts("PapiKos");
     resetcolor();
 
-    struct Termsize termsize = gettermsize();
     login_menu();
     return 0;
 }

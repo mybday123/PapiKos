@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "../include/termui.h"
 
 #ifdef _WIN32
@@ -125,4 +126,30 @@ void enable_echo() {
 
 void print_newline() {
     printf("\n");
+}
+
+int scan_input(char* buffer, size_t max_len) {
+    char temp[1024];
+    if (!fgets(temp, sizeof(temp), stdin)) {
+        return 0;
+    }
+
+    size_t len = strlen(temp);
+    if (temp[len - 1] == '\n') {
+        temp[len - 1] = '\0';
+        len--;
+    }
+
+    if (len > max_len) {
+        return 0;
+    }
+
+    for (size_t i = 0; i < len; i++) {
+        if (!isalnum(temp[i])) {
+            return 0;
+        }
+    }
+
+    strncpy(buffer, temp, max_len + 1);
+    return 1;
 }
